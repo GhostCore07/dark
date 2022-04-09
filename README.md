@@ -11,8 +11,8 @@ MINIMIALIST UPDATE
 - Fixed old constant references (PI and GL) to the correct new ones
 - Disabled null safety check
 - Updated dependency versions to latest
-- Fixed rotation error due to change in vector_math dependency
-- Added null check for source that was causing a crash
+- Fixed rotation error, cascading calls, due to change in vector_math dependency
+- Added null check for source that was causing a crash on newer SDK
 - Tested with IntelliJ IDEA Ultimate with Dart support and Dart SDK 2.16.2
 - Tested with Chrome 100.0 and Firefox 99.0
 
