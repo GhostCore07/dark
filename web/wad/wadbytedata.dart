@@ -1,11 +1,14 @@
+// @dart=2.9
+
 part of wad;
 
 /**
  * Replacement for ByteData. Adds getString and makes endianness be little endian.
  */
 class WadByteData {
-  static Endianness ENDIANNESS = Endianness.LITTLE_ENDIAN;
-  
+  // static Endianness ENDIANNESS = Endianness.LITTLE_ENDIAN;
+  static Endian ENDIANNESS = Endian.little;
+
   ByteData data;
   int lengthInBytes;
   int offsetInBytes = 0;

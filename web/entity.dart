@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 
 class PlayerSpawn {
@@ -59,8 +61,8 @@ class Entity {
   void addToDisplayList(double playerRot) {
     if (spriteTemplate==null) return;
     
-    double rotDiff = rot - playerRot+PI;
-    int rotFrame = (rotDiff * 8 / (PI * 2) + 0.5).floor() & 7;
+    double rotDiff = rot - playerRot+pi;
+    int rotFrame = (rotDiff * 8 / (pi * 2) + 0.5).floor() & 7;
     SpriteTemplateFrame stf = spriteTemplate.frames[animFrame];
     if (stf.rots.length == 1) rotFrame = 0;
     SpriteTemplateRot str = stf.rots[rotFrame];
@@ -514,7 +516,7 @@ class BfgShot extends Projectile {
         int amount = 40;
         for (int i=0; i<amount; i++) {
           Vector3 shootPos = owner.pos+new Vector3(0.0, 32.0, 0.0);
-          double rot = orgRot-PI/4+PI/2*i/amount;
+          double rot = orgRot-pi/4+pi/2*i/amount;
           Vector3 dir = new Vector3(sin(rot), 0.0, cos(rot));
   
           HitResult scanResult = level.hitscan(shootPos, dir, true);
@@ -699,7 +701,7 @@ class Player extends Mob {
     bobSpeed = motion.length/300.0;
     bobSpeed = bobSpeed*bobSpeed;
     if (bobSpeed>1.0) bobSpeed = 1.0;
-    bobPhase+=passedTime*PI*2*1.5*bobSpeed;
+    bobPhase+=passedTime*pi*2*1.5*bobSpeed;
   }
 }
 

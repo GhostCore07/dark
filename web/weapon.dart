@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 
 class GunAnimation {
@@ -117,7 +119,7 @@ class Weapon {
       Vector3 p = new Vector3.copy(checkEnemyScan.pos);
       for (int i=0; i<8; i++) {
         p.y = checkEnemyScan.entity.pos.y+checkEnemyScan.entity.height*i/7; 
-        HitResult scanResult = level.hitscan(pos, (p-pos).normalize(), false);
+        HitResult scanResult = level.hitscan(pos, (p-pos).normalized(), false);
         if (scanResult!=null && scanResult.entity!=null) {
           double yAim = scanResult.entity.pos.y+scanResult.entity.height/2.0;
           dir*=(scanResult.entity.pos-pos).length;
@@ -137,7 +139,7 @@ class Weapon {
         spread = new Vector3(random.nextDouble()-0.5, random.nextDouble()-0.5, random.nextDouble()-0.5)*2.0;
       } while (spread.length2>1.0);
       spread.y*=0.2;
-      HitResult result = level.hitscan(pos, (dir+spread*spreadAmount).normalize(), false);
+      HitResult result = level.hitscan(pos, (dir+spread*spreadAmount).normalized(), false);
       if (result!=null) {
         if (result.segment!=null) {
           if (result.segment.wall.data.type!=0) {
@@ -171,7 +173,7 @@ class Weapon {
   }
   
   bool punch(Vector3 pos, Vector3 dir, double maxDistance) {
-    HitResult result = level.hitscan(pos, dir.normalize(), false);
+    HitResult result = level.hitscan(pos, dir.normalized(), false);
     if (result!=null) {
       if (result.pos.distanceToSquared(pos)>maxDistance*maxDistance) {
         return false;

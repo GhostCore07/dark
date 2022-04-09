@@ -1,3 +1,5 @@
+// @dart=2.9
+
 library Dark;
 
 import "dart:html";
@@ -138,7 +140,7 @@ void startup() {
   }).then((_) { 
     topLevelCatch(() {
       printToConsole("Loading WAD file");
-      attemptToLoadWadData(["originaldoom/doom.wad", "freedoom/doom.wad"]).then((data) {
+      attemptToLoadWadData(["originaldoom/DOOM.WAD", "freedoom/doom.wad"]).then((data) {
         topLevelCatch((){
           WAD.WadFile wadFile = new WAD.WadFile.read(data); 
           wadFileLoaded(wadFile);
@@ -405,7 +407,10 @@ class SoundChannel {
   }
   
   void stop() {
-    source.stop(0.0);
+    if (source != null)
+      {
+        source.stop(0.0);
+      }
   }
   
   void finished() {
@@ -491,11 +496,12 @@ void start(Level _level) {
     }
   }
 
+  // GL.WebGL.TEXTURE_2D
   GL.Texture colorLookupTexture = gl.createTexture();
-  gl.bindTexture(GL.TEXTURE_2D, colorLookupTexture);
-  gl.texImage2DTyped(GL.TEXTURE_2D,  0,  GL.RGBA,  256,  256,  0,  GL.RGBA,  GL.UNSIGNED_BYTE, lookupTextureData);
-  gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-  gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+  gl.bindTexture(GL.WebGL.TEXTURE_2D, colorLookupTexture);
+  gl.texImage2DTyped(GL.WebGL.TEXTURE_2D,  0,  GL.WebGL.RGBA,  256,  256,  0,  GL.WebGL.RGBA,  GL.WebGL.UNSIGNED_BYTE, lookupTextureData);
+  gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MIN_FILTER, GL.WebGL.NEAREST);
+  gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MAG_FILTER, GL.WebGL.NEAREST);
 
   printToConsole("Setting up screen renderer");
   screenRenderer = new ScreenRenderer(shaders.screenBlitShader,  indexColorBuffers[0].texture, colorLookupTexture);
@@ -535,22 +541,22 @@ class Framebuffer {
 
   Framebuffer(this.width, this.height) {
     framebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(GL.FRAMEBUFFER, framebuffer);
+    gl.bindFramebuffer(GL.WebGL.FRAMEBUFFER, framebuffer);
 
     texture = gl.createTexture();
-    gl.bindTexture(GL.TEXTURE_2D, texture);
-    gl.texImage2DTyped(GL.TEXTURE_2D,  0,  GL.RGBA,  width,  height,  0,  GL.RGBA,  GL.UNSIGNED_BYTE, null);
-    gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-    gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, texture);
+    gl.texImage2DTyped(GL.WebGL.TEXTURE_2D,  0,  GL.WebGL.RGBA,  width,  height,  0,  GL.WebGL.RGBA,  GL.WebGL.UNSIGNED_BYTE, null);
+    gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MIN_FILTER, GL.WebGL.NEAREST);
+    gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MAG_FILTER, GL.WebGL.NEAREST);
 
-    gl.framebufferTexture2D(GL.FRAMEBUFFER,  GL.COLOR_ATTACHMENT0,  GL.TEXTURE_2D,  texture, 0);
+    gl.framebufferTexture2D(GL.WebGL.FRAMEBUFFER,  GL.WebGL.COLOR_ATTACHMENT0,  GL.WebGL.TEXTURE_2D,  texture, 0);
 
     if (depthbuffer==null) {
       depthbuffer = gl.createRenderbuffer();
-      gl.bindRenderbuffer(GL.RENDERBUFFER, depthbuffer);
-      gl.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, width, height);
+      gl.bindRenderbuffer(GL.WebGL.RENDERBUFFER, depthbuffer);
+      gl.renderbufferStorage(GL.WebGL.RENDERBUFFER, GL.WebGL.DEPTH_COMPONENT16, width, height);
     }
-    gl.framebufferRenderbuffer(GL.FRAMEBUFFER,  GL.DEPTH_ATTACHMENT,  GL.RENDERBUFFER,  depthbuffer);
+    gl.framebufferRenderbuffer(GL.WebGL.FRAMEBUFFER,  GL.WebGL.DEPTH_ATTACHMENT,  GL.WebGL.RENDERBUFFER,  depthbuffer);
   }
 }
 
@@ -599,17 +605,18 @@ void updateGameLogic(double passedTime) {
 void renderGame() {
   indexColorBuffer = indexColorBuffers[indexColorBufferId = 0];
   screenRenderer.texture = indexColorBuffers[0].texture;
-  gl.bindFramebuffer(GL.FRAMEBUFFER, indexColorBuffers[1].framebuffer);
+  gl.bindFramebuffer(GL.WebGL.FRAMEBUFFER, indexColorBuffers[1].framebuffer);
   gl.viewport(0,  0,  screenWidth,  screenHeight);
 //  gl.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
 
-  projectionMatrix = makePerspectiveMatrix(60*PI/180,  screenWidth/screenHeight,  8,  10000.0).scale(-1.0, 1.0, 1.0);
+  projectionMatrix = makePerspectiveMatrix(60*pi/180,  screenWidth/screenHeight,  8,  10000.0)..scale(-1.0, 1.0, 1.0);
   if (Game.ORIGINAL_PIXEL_ASPECT_RATIO && !Game.ORIGINAL_RESOLUTION) {
     // If the original aspect ratio is set, this scaling is done elsewhere.
-    projectionMatrix = projectionMatrix.scale(1.0, 240/200, 1.0);
+    projectionMatrix = projectionMatrix..scale(1.0, 240/200, 1.0);
   }
   double bob = (sin(player.bobPhase)*0.5+0.5)*player.bobSpeed;
-  viewMatrix = new Matrix4.identity().rotateY(player.rot+PI).translate(-player.pos).translate(0.0, -41.0+bob*8+player.stepUp, 0.0);
+  viewMatrix = new Matrix4.identity()..rotateY(-(player.rot+pi))..translate(-player.pos)..translate(0.0, -41.0+bob*8+player.stepUp, 0.0);
+
   Matrix4 invertedViewMatrix = new Matrix4.copy(viewMatrix)..invert();
   Vector3 cameraPos = invertedViewMatrix.transform3(new Vector3(0.0, 0.0, 0.0));
 
@@ -645,19 +652,19 @@ void renderGame() {
 
   renderers.floors.buildBackWallHackData(visibleSegs, cameraPos);
   
-  gl.enable(GL.CULL_FACE);
-  gl.enable(GL.DEPTH_TEST);
-  gl.depthFunc(GL.ALWAYS);
-  gl.bindFramebuffer(GL.FRAMEBUFFER, segNormalBuffer.framebuffer);
+  gl.enable(GL.WebGL.CULL_FACE);
+  gl.enable(GL.WebGL.DEPTH_TEST);
+  gl.depthFunc(GL.WebGL.ALWAYS);
+  gl.bindFramebuffer(GL.WebGL.FRAMEBUFFER, segNormalBuffer.framebuffer);
   renderers.floors.render(shaders.segNormalShader, renderers.floorTexture);
   
-  gl.bindFramebuffer(GL.FRAMEBUFFER, segDistanceBuffer.framebuffer);
+  gl.bindFramebuffer(GL.WebGL.FRAMEBUFFER, segDistanceBuffer.framebuffer);
   renderers.floors.render(shaders.segDistanceShader, renderers.floorTexture);
   
-  gl.bindFramebuffer(GL.FRAMEBUFFER, indexColorBuffers[1].framebuffer);
+  gl.bindFramebuffer(GL.WebGL.FRAMEBUFFER, indexColorBuffers[1].framebuffer);
   renderers.floors.buildData(visibleSegs, cameraPos);
   renderers.floors.render(shaders.floorShader, renderers.floorTexture);
-  gl.depthFunc(GL.LEQUAL);
+  gl.depthFunc(GL.WebGL.LEQUAL);
 
   gl.viewport(0,  0,  screenWidth,  screenHeight);
   renderers.walls.values.forEach((walls) {
@@ -668,13 +675,13 @@ void renderGame() {
 
 
   Matrix4 oldMatrix = projectionMatrix;
-  projectionMatrix = makeOrthographicMatrix(0.0, screenWidth, screenHeight, 0.0, -10.0, 10.0);
-  gl.enable(GL.BLEND);
-  gl.blendFunc(GL.ONE_MINUS_DST_ALPHA, GL.DST_ALPHA);
+  projectionMatrix = makeOrthographicMatrix(0.0, screenWidth.toDouble(), screenHeight.toDouble(), 0.0, -10.0, 10.0);
+  gl.enable(GL.WebGL.BLEND);
+  gl.blendFunc(GL.WebGL.ONE_MINUS_DST_ALPHA, GL.WebGL.DST_ALPHA);
   gl.depthMask(false);
   skyRenderer.render();
   gl.depthMask(true);
-  gl.disable(GL.BLEND);
+  gl.disable(GL.WebGL.BLEND);
   projectionMatrix = oldMatrix;
 
   visibleEntities.forEach((entity) {
@@ -682,7 +689,7 @@ void renderGame() {
   });
 
 
-  gl.depthFunc(GL.ALWAYS);
+  gl.depthFunc(GL.WebGL.ALWAYS);
   renderers.spriteMaps.values.forEach((sprites) {
     sprites.render(shaders.spriteShader, segDistanceBuffer.texture, segNormalBuffer.texture, true);
   });
@@ -691,7 +698,7 @@ void renderGame() {
     sprites.render(shaders.spriteShader, segDistanceBuffer.texture, segNormalBuffer.texture, true);
   });
   gl.colorMask(true, true, true, true);
-  gl.depthFunc(GL.LEQUAL);
+  gl.depthFunc(GL.WebGL.LEQUAL);
   renderers.spriteMaps.values.forEach((sprites) {
     sprites.render(shaders.spriteShader, segDistanceBuffer.texture, segNormalBuffer.texture, true);
     sprites.clear();
@@ -711,16 +718,16 @@ void renderGame() {
 //  gl.depthMask(false);
   //gl.enable(GL.BLEND);
 //  gl.blendFunc(GL.DST_COLOR, GL.ZERO);
-  gl.bindFramebuffer(GL.FRAMEBUFFER, indexColorBuffers[0].framebuffer);
+  gl.bindFramebuffer(GL.WebGL.FRAMEBUFFER, indexColorBuffers[0].framebuffer);
   
   Matrix4 oldProjection = projectionMatrix;
-  projectionMatrix = makeOrthographicMatrix(0.0, screenWidth, screenHeight, 0.0, -10.0, 10.0);
+  projectionMatrix = makeOrthographicMatrix(0.0, screenWidth.toDouble(), screenHeight.toDouble(), 0.0, -10.0, 10.0);
   
 //  skyRenderer.render();
-  gl.disable(GL.DEPTH_TEST);
+  gl.disable(GL.WebGL.DEPTH_TEST);
   transferRenderer.texture = indexColorBuffers[1].texture;
   transferRenderer.render();
-  gl.enable(GL.DEPTH_TEST);
+  gl.enable(GL.WebGL.DEPTH_TEST);
   projectionMatrix = oldProjection;
   
   renderers.transparentSpriteMaps.values.forEach((sprites) {
@@ -736,7 +743,7 @@ void renderGame() {
 
 int guiSpriteCount = 0;
 void renderGui() {
-  gl.disable(GL.DEPTH_TEST);
+  gl.disable(GL.WebGL.DEPTH_TEST);
   int ww = screenWidth*200~/screenHeight;
   if (!Game.ORIGINAL_RESOLUTION && Game.ORIGINAL_PIXEL_ASPECT_RATIO) {
     ww=ww*240~/200;
@@ -754,28 +761,28 @@ void renderGui() {
   renderers.addGuiText(0, 16, "MAX FPS: ${(1.0/lastFrameLogicSeconds).toStringAsPrecision(4)}");
   
   
-  gl.enable(GL.BLEND);
-  gl.disable(GL.CULL_FACE);
-  gl.blendFunc(GL.SRC_ALPHA,  GL.ONE_MINUS_SRC_ALPHA);
+  gl.enable(GL.WebGL.BLEND);
+  gl.disable(GL.WebGL.CULL_FACE);
+  gl.blendFunc(GL.WebGL.SRC_ALPHA,  GL.WebGL.ONE_MINUS_SRC_ALPHA);
   renderers.guiSprites.values.forEach((sprites) {
     sprites.render(shaders.spriteShader, segDistanceBuffer.texture, segNormalBuffer.texture, false);
     sprites.clear();
   });  
   guiSpriteCount = 0;
-  gl.enable(GL.CULL_FACE);
-  gl.disable(GL.BLEND);
+  gl.enable(GL.WebGL.CULL_FACE);
+  gl.disable(GL.WebGL.BLEND);
 }
 
 void blitScreen() {
-  gl.bindFramebuffer(GL.FRAMEBUFFER, null);
+  gl.bindFramebuffer(GL.WebGL.FRAMEBUFFER, null);
   gl.viewport(0,  0,  screenWidth,  screenHeight);
-  gl.disable(GL.DEPTH_TEST);
-  projectionMatrix = makeOrthographicMatrix(0.0, screenWidth, screenHeight, 0.0, -10.0, 10.0);
+  gl.disable(GL.WebGL.DEPTH_TEST);
+  projectionMatrix = makeOrthographicMatrix(0.0, screenWidth.toDouble(), screenHeight.toDouble(), 0.0, -10.0, 10.0);
 //  skyRenderer.render();
-  gl.enable(GL.BLEND);
-  gl.blendFunc(GL.SRC_ALPHA,  GL.ONE_MINUS_SRC_ALPHA);
+  gl.enable(GL.WebGL.BLEND);
+  gl.blendFunc(GL.WebGL.SRC_ALPHA,  GL.WebGL.ONE_MINUS_SRC_ALPHA);
   screenRenderer.render();
-  gl.disable(GL.BLEND);
+  gl.disable(GL.WebGL.BLEND);
 }
 
 double scrollAccum = 0.0;

@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 int _subSectorCount = 0;
 
@@ -433,7 +435,7 @@ class BSPNode {
   
   BSPNode(Level level, WAD.Node node) {
     Vector2 pos = new Vector2(node.x.toDouble(), node.y.toDouble());
-    Vector2 dir = new Vector2(-node.dy.toDouble(), node.dx.toDouble()).normalize();
+    Vector2 dir = new Vector2(-node.dy.toDouble(), node.dx.toDouble()).normalized();
     x0 = pos.x;
     y0 = pos.y;
     d = pos.dot(dir);

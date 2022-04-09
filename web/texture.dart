@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 
 class Texture {
@@ -18,10 +20,11 @@ class Texture {
     ImageElement img = new ImageElement();
     texture = gl.createTexture();
     img.onLoad.listen((e) {
-      gl.bindTexture(GL.TEXTURE_2D,  texture);
-      gl.texImage2DImage(GL.TEXTURE_2D,  0,  GL.RGBA,  GL.RGBA,  GL.UNSIGNED_BYTE, img);
-      gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-      gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+      gl.bindTexture(GL.WebGL.TEXTURE_2D,  texture);
+      // gl.texImage2DImage(GL.WebGL.TEXTURE_2D,  0,  GL.WebGL.RGBA,  GL.WebGL.RGBA,  GL.WebGL.UNSIGNED_BYTE, img);
+      gl.texImage2D(GL.WebGL.TEXTURE_2D,  0,  GL.WebGL.RGBA,  GL.WebGL.RGBA,  GL.WebGL.UNSIGNED_BYTE, img);
+      gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MIN_FILTER, GL.WebGL.NEAREST);
+      gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MAG_FILTER, GL.WebGL.NEAREST);
     }, onError: (e) => print(e));
     img.src = url;
   }
@@ -46,10 +49,10 @@ class ImageAtlas {
     
     Uint8List result = new Uint8List(width*height*4);
     cell.render(this, result);
-    gl.bindTexture(GL.TEXTURE_2D, texture);
-    gl.texImage2DTyped(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, result);
-    gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-    gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, texture);
+    gl.texImage2DTyped(GL.WebGL.TEXTURE_2D, 0, GL.WebGL.RGBA, width, height, 0, GL.WebGL.RGBA, GL.WebGL.UNSIGNED_BYTE, result);
+    gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MIN_FILTER, GL.WebGL.NEAREST);
+    gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MAG_FILTER, GL.WebGL.NEAREST);
   }
 }
 
@@ -161,10 +164,10 @@ class Image {
       }
     }    
     
-    gl.bindTexture(GL.TEXTURE_2D, texture);
-    gl.texImage2DTyped(GL.TEXTURE_2D, 0, GL.RGBA, image.width, image.height, 0, GL.RGBA, GL.UNSIGNED_BYTE, pixelData);
-    gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-    gl.texParameteri(GL.TEXTURE_2D,  GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, texture);
+    gl.texImage2DTyped(GL.WebGL.TEXTURE_2D, 0, GL.WebGL.RGBA, image.width, image.height, 0, GL.WebGL.RGBA, GL.WebGL.UNSIGNED_BYTE, pixelData);
+    gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MIN_FILTER, GL.WebGL.NEAREST);
+    gl.texParameteri(GL.WebGL.TEXTURE_2D,  GL.WebGL.TEXTURE_MAG_FILTER, GL.WebGL.NEAREST);
     
     return texture;
   }

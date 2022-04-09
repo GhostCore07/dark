@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 
 class BlockCell {
@@ -137,7 +139,7 @@ class Level {
     Vector3 spritePos = new Vector3(thing.x.toDouble(), 20.0, thing.y.toDouble());
     Sector sector = bsp.findSector(spritePos.x, spritePos.z);
     spritePos.y = sector.floorHeight;
-    double rot = ((90-thing.angle-22)~/45)*PI*2/8.0;
+    double rot = ((90-thing.angle-22)~/45)*pi*2/8.0;
     
     switch (thing.type) { 
       case 0x0001: playerSpawns[0] = new PlayerSpawn(spritePos, rot); break; // Spawn 1
@@ -322,7 +324,7 @@ class Segment {
     startVertex = new Vector2(x0, y0);
     endVertex = new Vector2(x1, y1);
     
-    Vector2 tangent = (endVertex-startVertex).normalize();
+    Vector2 tangent = (endVertex-startVertex).normalized();
     xt = tangent.x;
     yt = tangent.y;
 
@@ -401,7 +403,7 @@ class Wall {
     
     length = sqrt(xd*xd+yd*yd);
     
-    Vector2 tangent = (endVertex-startVertex).normalize();
+    Vector2 tangent = (endVertex-startVertex).normalized();
     xt = tangent.x;
     yt = tangent.y;
 
