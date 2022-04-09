@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 
 LinedefTriggers linedefTriggers = new LinedefTriggers();
@@ -253,7 +255,7 @@ class FloorRaiseTrigger extends LinedefTrigger {
   }
   
   void triggerOnSector(Sector sector, Wall wall, bool rightSide) {
-    sector.effect = new FloorRaiseEffect(this);
+    // sector.effect = new FloorRaiseEffect(this);
   }
 }
 

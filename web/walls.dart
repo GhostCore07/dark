@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 
 class Floors {
@@ -28,8 +30,8 @@ class Floors {
 //  Floors(this.shader, this.texture, this.sectorDepthRender) {
   Floors() {
     vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferDataTyped(GL.ARRAY_BUFFER, vertexData, GL.DYNAMIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ARRAY_BUFFER, vertexData, GL.WebGL.DYNAMIC_DRAW);
 
     Int16List indexData = new Int16List(MAX_SPRITES * 3);
     for (int i = 0; i < MAX_SPRITES; i++) {
@@ -38,8 +40,8 @@ class Floors {
     }
 
     indexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferDataTyped(GL.ELEMENT_ARRAY_BUFFER, indexData, GL.STATIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexData, GL.WebGL.STATIC_DRAW);
 
     //shader.use();
 /*  posLocation = gl.getAttribLocation(shader.program, "a_pos");
@@ -54,7 +56,7 @@ class Floors {
 
   int pp = 0;
   void buildData(List<Segment> visibleSegs, Vector3 pos) {
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
 
     int ip = 0;
     pp = 0;
@@ -181,31 +183,31 @@ class Floors {
         pp+=3;
       }
     }
-    gl.bufferSubDataTyped(GL.ARRAY_BUFFER, 0, vertexData.sublist(0, pp * FLOATS_PER_VERTEX) as Float32List);
+    gl.bufferSubDataTyped(GL.WebGL.ARRAY_BUFFER, 0, vertexData.sublist(0, pp * FLOATS_PER_VERTEX) as Float32List);
   }
   
   void render(Shader shader, GL.Texture texture) {
     shader.use();
-    gl.bindTexture(GL.TEXTURE_2D, texture);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, texture);
 
     shader.uniformMatrix4fv("u_modelMatrix", false, modelMatrix.storage);
     shader.uniformMatrix4fv("u_viewMatrix", false, viewMatrix.storage);
     shader.uniformMatrix4fv("u_projectionMatrix", false, projectionMatrix.storage);
     shader.uniform1f("u_texAtlasSize", TEXTURE_ATLAS_SIZE+0.0);
 
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
     
     shader.bindVertexData("a_pos", 4, 0, FLOATS_PER_VERTEX);
     shader.bindVertexData("a_texOffs", 2, 4, FLOATS_PER_VERTEX);
     shader.bindVertexData("a_brightness", 1, 6, FLOATS_PER_VERTEX);
 
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.drawElements(GL.TRIANGLES, pp, GL.UNSIGNED_SHORT, 0);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.drawElements(GL.WebGL.TRIANGLES, pp, GL.WebGL.UNSIGNED_SHORT, 0);
   }
 
 
   void buildBackWallHackData(List<Segment> visibleSegs, Vector3 pos) {
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
 
     pp = 0;
     int ip = 0;
@@ -304,11 +306,11 @@ class Floors {
       }
     }
 
-    gl.bufferSubDataTyped(GL.ARRAY_BUFFER, 0, vertexData.sublist(0, pp * FLOATS_PER_VERTEX) as Float32List);
+    gl.bufferSubDataTyped(GL.WebGL.ARRAY_BUFFER, 0, vertexData.sublist(0, pp * FLOATS_PER_VERTEX) as Float32List);
   }
 }
 
-typedef bool InsertWallFunction(Float32List, int); 
+typedef bool InsertWallFunction(Float32List a, int b);
 
 class Walls {
   // Vertex data:
@@ -346,8 +348,8 @@ class Walls {
 
   Walls(this.shader, this.texture) {
     vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferDataTyped(GL.ARRAY_BUFFER, vertexData, GL.DYNAMIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ARRAY_BUFFER, vertexData, GL.WebGL.DYNAMIC_DRAW);
 
     Int16List indexData = new Int16List(MAX_SPRITES * 6);
     for (int i = 0; i < MAX_SPRITES; i++) {
@@ -356,8 +358,8 @@ class Walls {
     }
 
     indexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferDataTyped(GL.ELEMENT_ARRAY_BUFFER, indexData, GL.STATIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexData, GL.WebGL.STATIC_DRAW);
 
     shader.use();
     posLocation = gl.getAttribLocation(shader.program, "a_pos");
@@ -394,9 +396,9 @@ class Walls {
 
   void render() {
     shader.use();
-    gl.bindTexture(GL.TEXTURE_2D, texture);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, texture);
 
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
     int toReplace = wallCount;
     /*    int pp = 0;
     for (int i=0; i<toReplace; i++) {
@@ -404,7 +406,7 @@ class Walls {
         pp++;
       }
     }*/
-    gl.bufferSubDataTyped(GL.ARRAY_BUFFER, 0, vertexData.sublist(0, wallCount * FLOATS_PER_VERTEX * 4) as Float32List);
+    gl.bufferSubDataTyped(GL.WebGL.ARRAY_BUFFER, 0, vertexData.sublist(0, wallCount * FLOATS_PER_VERTEX * 4) as Float32List);
 
     gl.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.storage);
     gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix.storage);
@@ -417,15 +419,15 @@ class Walls {
     gl.enableVertexAttribArray(texWidthLocation);
     gl.enableVertexAttribArray(brightnessLocation);
 
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.vertexAttribPointer(posLocation, 3, GL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 0 * BYTES_PER_FLOAT);
-    gl.vertexAttribPointer(uvLocation, 2, GL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 3 * BYTES_PER_FLOAT);
-    gl.vertexAttribPointer(texOffsLocation, 2, GL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 5 * BYTES_PER_FLOAT);
-    gl.vertexAttribPointer(texWidthLocation, 1, GL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 7 * BYTES_PER_FLOAT);
-    gl.vertexAttribPointer(brightnessLocation, 1, GL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 8 * BYTES_PER_FLOAT);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.vertexAttribPointer(posLocation, 3, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 0 * BYTES_PER_FLOAT);
+    gl.vertexAttribPointer(uvLocation, 2, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 3 * BYTES_PER_FLOAT);
+    gl.vertexAttribPointer(texOffsLocation, 2, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 5 * BYTES_PER_FLOAT);
+    gl.vertexAttribPointer(texWidthLocation, 1, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 7 * BYTES_PER_FLOAT);
+    gl.vertexAttribPointer(brightnessLocation, 1, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX * BYTES_PER_FLOAT, 8 * BYTES_PER_FLOAT);
 
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.drawElements(GL.TRIANGLES, wallCount * 6, GL.UNSIGNED_SHORT, 0);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.drawElements(GL.WebGL.TRIANGLES, wallCount * 6, GL.WebGL.UNSIGNED_SHORT, 0);
   }
 }
 

@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 
 List<Shader> allShaders = new List<Shader>();
@@ -63,7 +65,7 @@ class Shader {
     if (!attribs.containsKey(name)) return;
     int location = attribs[name]; 
     gl.enableVertexAttribArray(location);
-    gl.vertexAttribPointer(location, length, GL.FLOAT, false, floatsPerVertex * BYTES_PER_FLOAT, offs * BYTES_PER_FLOAT);
+    gl.vertexAttribPointer(location, length, GL.WebGL.FLOAT, false, floatsPerVertex * BYTES_PER_FLOAT, offs * BYTES_PER_FLOAT);
   }
   
 /*
@@ -96,19 +98,19 @@ class Shader {
   }
 
   void create(String vertexShaderSource, String fragmentShaderSource) {
-    GL.Shader vertexShader = compile(vertexShaderSource, GL.VERTEX_SHADER);
-    GL.Shader fragmentShader = compile(fragmentShaderSource, GL.FRAGMENT_SHADER);
+    GL.Shader vertexShader = compile(vertexShaderSource, GL.WebGL.VERTEX_SHADER);
+    GL.Shader fragmentShader = compile(fragmentShaderSource, GL.WebGL.FRAGMENT_SHADER);
     program = link(vertexShader, fragmentShader);
     
     gl.useProgram(program);
     
-    int uniformCount = gl.getProgramParameter(program,  GL.ACTIVE_UNIFORMS);
+    int uniformCount = gl.getProgramParameter(program,  GL.WebGL.ACTIVE_UNIFORMS);
     for (int i=0; i<uniformCount; i++) {
       String name = gl.getActiveUniform(program,  i).name;
       uniforms[name] = gl.getUniformLocation(program,  name);
     }
     
-    int attributeCount = gl.getProgramParameter(program, GL.ACTIVE_ATTRIBUTES);
+    int attributeCount = gl.getProgramParameter(program, GL.WebGL.ACTIVE_ATTRIBUTES);
     for (int i=0; i<attributeCount; i++) {
       String name = gl.getActiveAttrib(program,  i).name;
       attribs[name] = gl.getAttribLocation(program,  name);
@@ -125,7 +127,7 @@ class Shader {
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     
-    if (!gl.getProgramParameter(program,  GL.LINK_STATUS)) {
+    if (!gl.getProgramParameter(program,  GL.WebGL.LINK_STATUS)) {
       throw "Failed to link\r${gl.getProgramInfoLog(program)}";
     }
     
@@ -137,8 +139,8 @@ class Shader {
     gl.shaderSource(shader,  source);
     gl.compileShader(shader);
     
-    if  (!gl.getShaderParameter(shader,  GL.COMPILE_STATUS)) {
-      throw "Failed to compile ${type==GL.VERTEX_SHADER?"vertex":"fragment"} shader\r${gl.getShaderInfoLog(shader)}";
+    if  (!gl.getShaderParameter(shader,  GL.WebGL.COMPILE_STATUS)) {
+      throw "Failed to compile ${type==GL.WebGL.VERTEX_SHADER?"vertex":"fragment"} shader\r${gl.getShaderInfoLog(shader)}";
     }
     
     return shader;

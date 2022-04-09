@@ -1,3 +1,5 @@
+// @dart=2.9
+
 library WadExplorer;
 
 import "dart:html";
@@ -12,7 +14,7 @@ import "wad/wad.dart" as WAD;
 
 void main() {
   print("Loading WAD file");
-  attemptToLoadWadData(["originaldoom/doom.wad", "freedoom/doom.wad"]).then((data) {
+  attemptToLoadWadData(["originaldoom/DOOM.WAD", "freedoom/doom.wad"]).then((data) {
     WAD.WadFile wadFile = new WAD.WadFile.read(data); 
     wadFileLoaded(wadFile);
   });

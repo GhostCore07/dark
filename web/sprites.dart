@@ -1,3 +1,5 @@
+// @dart=2.9
+
 part of Dark;
 
 class Sprites {
@@ -25,8 +27,8 @@ class Sprites {
   
   Sprites(this.texture) {
     vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferDataTyped(GL.ARRAY_BUFFER, vertexData, GL.DYNAMIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ARRAY_BUFFER, vertexData, GL.WebGL.DYNAMIC_DRAW);
     
     Int16List indexData = new Int16List(MAX_SPRITES*6);
     for (int i=0; i<MAX_SPRITES; i++) {
@@ -35,8 +37,8 @@ class Sprites {
     }
     
     indexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferDataTyped(GL.ELEMENT_ARRAY_BUFFER, indexData, GL.STATIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexData, GL.WebGL.STATIC_DRAW);
     /*
     shader.use();
     subSectorIdLocation = gl.getAttribLocation(shader.program, "a_subSectorId");
@@ -110,15 +112,15 @@ class Sprites {
     shader.uniform1i("u_distanceTex", 2);
     shader.uniform1i("u_normalTex", 1);
     shader.uniform1i("u_tex", 0);
-    gl.activeTexture(GL.TEXTURE2);
-    gl.bindTexture(GL.TEXTURE_2D, segDistanceTexture);
-    gl.activeTexture(GL.TEXTURE1);
-    gl.bindTexture(GL.TEXTURE_2D, segNormalTexture);
-    gl.activeTexture(GL.TEXTURE0);
-    gl.bindTexture(GL.TEXTURE_2D, texture);
+    gl.activeTexture(GL.WebGL.TEXTURE2);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, segDistanceTexture);
+    gl.activeTexture(GL.WebGL.TEXTURE1);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, segNormalTexture);
+    gl.activeTexture(GL.WebGL.TEXTURE0);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, texture);
     
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferSubDataTyped(GL.ARRAY_BUFFER, 0, vertexData.sublist(0, spriteCount*FLOATS_PER_VERTEX*4) as Float32List);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferSubDataTyped(GL.WebGL.ARRAY_BUFFER, 0, vertexData.sublist(0, spriteCount*FLOATS_PER_VERTEX*4) as Float32List);
     
     shader.uniformMatrix4fv("u_modelMatrix", false, modelMatrix.storage);
     shader.uniformMatrix4fv("u_viewMatrix", false, viewMatrix.storage);
@@ -134,15 +136,15 @@ class Sprites {
     }
     
     
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
     shader.bindVertexData("a_pos", 3, 0, FLOATS_PER_VERTEX);
     shader.bindVertexData("a_subSectorId", 1, 3, FLOATS_PER_VERTEX);
     shader.bindVertexData("a_offs", 2, 4, FLOATS_PER_VERTEX);
     shader.bindVertexData("a_uv", 2, 6, FLOATS_PER_VERTEX);
     shader.bindVertexData("a_brightness", 1, 8, FLOATS_PER_VERTEX);
 
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.drawElements(GL.TRIANGLES, spriteCount*6, GL.UNSIGNED_SHORT, 0);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.drawElements(GL.WebGL.TRIANGLES, spriteCount*6, GL.WebGL.UNSIGNED_SHORT, 0);
   }
 }
 
@@ -252,15 +254,15 @@ class ScreenRenderer {
   
   ScreenRenderer(this.shader, this.texture, this.colorLookupTexture) {
     vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferDataTyped(GL.ARRAY_BUFFER, vertexData, GL.DYNAMIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ARRAY_BUFFER, vertexData, GL.WebGL.DYNAMIC_DRAW);
     
     Int16List indexData = new Int16List(6);
     indexData.setAll(0, [0, 1, 2, 0, 2, 3]);
     
     indexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferDataTyped(GL.ELEMENT_ARRAY_BUFFER, indexData, GL.STATIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexData, GL.WebGL.STATIC_DRAW);
     
     shader.use();
     posLocation = gl.getAttribLocation(shader.program, "a_pos");
@@ -276,12 +278,12 @@ class ScreenRenderer {
 
   void render() {
     shader.use();
-    gl.activeTexture(GL.TEXTURE1);
-    gl.bindTexture(GL.TEXTURE_2D, colorLookupTexture);
-    gl.activeTexture(GL.TEXTURE0);
-    gl.bindTexture(GL.TEXTURE_2D, texture);
+    gl.activeTexture(GL.WebGL.TEXTURE1);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, colorLookupTexture);
+    gl.activeTexture(GL.WebGL.TEXTURE0);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, texture);
     
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
     double w = screenWidth.toDouble();
     double h = screenHeight.toDouble();
     double u = w/indexColorBuffer.width;
@@ -292,7 +294,7 @@ class ScreenRenderer {
                                 w,   h,   u, 0.0,
                                 w, 0.0,   u,   v,
                          ]);
-    gl.bufferSubDataTyped(GL.ARRAY_BUFFER, 0, vertexData);
+    gl.bufferSubDataTyped(GL.WebGL.ARRAY_BUFFER, 0, vertexData);
     
     gl.uniformMatrix4fv(projectionMatrixLocation, false, projectionMatrix.storage);
     gl.uniform1f(invulnerableLocation, invulnerable?1.0:0.0);
@@ -300,12 +302,12 @@ class ScreenRenderer {
     gl.enableVertexAttribArray(posLocation);
     gl.enableVertexAttribArray(uvLocation);
     
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.vertexAttribPointer(posLocation, 2, GL.FLOAT, false, FLOATS_PER_VERTEX*BYTES_PER_FLOAT, 0*BYTES_PER_FLOAT);
-    gl.vertexAttribPointer(uvLocation, 2, GL.FLOAT, false, FLOATS_PER_VERTEX*BYTES_PER_FLOAT, 2*BYTES_PER_FLOAT);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.vertexAttribPointer(posLocation, 2, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX*BYTES_PER_FLOAT, 0*BYTES_PER_FLOAT);
+    gl.vertexAttribPointer(uvLocation, 2, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX*BYTES_PER_FLOAT, 2*BYTES_PER_FLOAT);
 
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.drawElements(GL.TRIANGLES, 6, GL.UNSIGNED_SHORT, 0);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.drawElements(GL.WebGL.TRIANGLES, 6, GL.WebGL.UNSIGNED_SHORT, 0);
   }
 }
 
@@ -336,15 +338,15 @@ class SkyRenderer {
   
   SkyRenderer(this.shader, this.texture) {
     vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferDataTyped(GL.ARRAY_BUFFER, vertexData, GL.DYNAMIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ARRAY_BUFFER, vertexData, GL.WebGL.DYNAMIC_DRAW);
     
     Int16List indexData = new Int16List(6);
     indexData.setAll(0, [0, 1, 2, 0, 2, 3]);
     
     indexBuffer = gl.createBuffer();
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferDataTyped(GL.ELEMENT_ARRAY_BUFFER, indexData, GL.STATIC_DRAW);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferDataTyped(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexData, GL.WebGL.STATIC_DRAW);
     
     shader.use();
     posLocation = gl.getAttribLocation(shader.program, "a_pos");
@@ -355,14 +357,14 @@ class SkyRenderer {
   
   void render() {
     shader.use();
-    gl.activeTexture(GL.TEXTURE0);
-    gl.bindTexture(GL.TEXTURE_2D, texture);
+    gl.activeTexture(GL.WebGL.TEXTURE0);
+    gl.bindTexture(GL.WebGL.TEXTURE_2D, texture);
     
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
     double w = screenWidth.toDouble();
     double h = screenHeight.toDouble();
-    double uo = player.rot*1.0/(PI*2);
-    double u = w/h*0.12*PI;
+    double uo = player.rot*1.0/(pi*2);
+    double u = w/h*0.12*pi;
     double v = 200/128;
     vertexData.setAll(0, [
                               0.0, 0.0, -u, 0.0, uo,
@@ -370,18 +372,18 @@ class SkyRenderer {
                                 w,   h,  u,   v, uo,
                                 w, 0.0,  u, 0.0, uo,
                          ]);
-    gl.bufferSubDataTyped(GL.ARRAY_BUFFER, 0, vertexData);
+    gl.bufferSubDataTyped(GL.WebGL.ARRAY_BUFFER, 0, vertexData);
     
     gl.uniformMatrix4fv(projectionMatrixLocation, false, projectionMatrix.storage);
     
     gl.enableVertexAttribArray(posLocation);
     gl.enableVertexAttribArray(uvLocation);
     
-    gl.bindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-    gl.vertexAttribPointer(posLocation, 2, GL.FLOAT, false, FLOATS_PER_VERTEX*BYTES_PER_FLOAT, 0*BYTES_PER_FLOAT);
-    gl.vertexAttribPointer(uvLocation, 3, GL.FLOAT, false, FLOATS_PER_VERTEX*BYTES_PER_FLOAT, 2*BYTES_PER_FLOAT);
+    gl.bindBuffer(GL.WebGL.ARRAY_BUFFER, vertexBuffer);
+    gl.vertexAttribPointer(posLocation, 2, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX*BYTES_PER_FLOAT, 0*BYTES_PER_FLOAT);
+    gl.vertexAttribPointer(uvLocation, 3, GL.WebGL.FLOAT, false, FLOATS_PER_VERTEX*BYTES_PER_FLOAT, 2*BYTES_PER_FLOAT);
 
-    gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.drawElements(GL.TRIANGLES, 6, GL.UNSIGNED_SHORT, 0);
+    gl.bindBuffer(GL.WebGL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.drawElements(GL.WebGL.TRIANGLES, 6, GL.WebGL.UNSIGNED_SHORT, 0);
   }
 }
